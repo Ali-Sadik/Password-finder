@@ -8,10 +8,21 @@ const app = express();
 const PORT = process.env.PORT || 3050;
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "/public")));
+app.use(express.static(path.join(__dirname, "public")));
 
-// Load user data from user.json
-let userData = JSON.parse(fs.readFileSync("user.json", "utf8"));
+// Function to load user data from user.json
+function loadUserData() {
+  try {
+    const data = fs.readFileSync(path.join(__dirname, "user.json"), "utf8");
+    return JSON.parse(data);
+  } catch (err) {
+    console.error("Error loading user data:", err);
+    return [];
+  }
+}
+
+// Load user data
+let userData = loadUserData();
 
 app.post("/login", (req, res) => {
   const { roll, email, password } = req.body;
@@ -41,7 +52,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(
-    "Server==\x1b[0m\x1b[32msuccess\x1b[0m\x1b[37m__________\x1b[0m\x1b[33mserver.js\x1b[0m\x1b[37m running \x1b[0m\x1b[37mPassword-finder\x1b[0m\x1b[37m__________\x1b[0mon \x1b[31mport \x1b[0m\x1b[31m3050\x1b[0m"
-  );
+  console.log(`Server running on port ${PORT}`);
 });
