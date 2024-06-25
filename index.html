@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <title>Password finder</title>
+    <style>
+      body {
+        font-family: Manrope, sans-serif;
+        background-color: #ffffff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+      }
+
+      .container {
+        background-color: #ffffff;
+        padding: 70px;
+        border-radius: 12px;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+        margin: auto;
+      }
+      .container2 {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+        margin: auto;
+        margin-top: 20px;
+        font-size: 15px;
+        text-align: center;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      button {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-sizing: border-box;
+      }
+
+      button {
+        background-color: #f22c2f;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .rounded-button {
+        border-radius: 20px;
+      }
+
+      #passwordDisplay {
+        margin-top: 10px;
+        text-align: center;
+      }
+      .footer {
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        background-color: #ffffff;
+        padding: 10px 0;
+        text-decoration: none;
+        font-size: 12px;
+      }
+      @media (width < 768px) {
+
+          body
+          {
+            height: 93vh;
+          }
+
+          .footer{
+            font-size: 10px;
+          }
+        h1 {
+          margin-bottom: 40px;
+          font-size: 25px;
+        text-align: center;
+      }
+        
+        .container {
+          background-color: white;
+          padding: 100px;
+          width: 50%;
+          border-radius: 30px;
+          box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);
+          margin-top: 30px;
+        }
+        .container2 {
+        background-color: #ffffff;
+        padding: 12px;
+        border-radius: 30px;
+        box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);
+        margin: auto;
+        margin-top: -80px;
+        font-size: 12px;
+        text-align: center;
+      }
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      button {
+        display: block;
+        width: 170%;
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-sizing: border-box;
+        margin-left: -70px;
+      }
+
+      button {
+        background-color: #f22c2f;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      }
+      #progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color:transparent;
+  z-index: 9999;
+}
+
+#progress-bar {
+  height: 4px;
+  background-color: #f22c2f;
+  width: 0;
+  animation: progressBarAnimation 1s forwards;
+}
+
+@keyframes progressBarAnimation {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <div id="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+    
+    <div class="container" style="margin-bottom: 0px;">
+      <h1>
+        Password
+        <span style="color: #f22c2f"><strong>Finder</strong></span>
+      </h1>
+      <form id="loginForm" action="/login" method="POST">
+        <!-- Updated action attribute -->
+        <input
+          type="text"
+          name="roll"
+          placeholder="Roll"
+          required
+          style="font-family: Manrope, sans-serif"
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="KUET provided E-mail"
+          required
+          style="font-family: Manrope, sans-serif"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="E-mail's password"
+          required
+          style="font-family: Manrope, sans-serif"
+        />
+        <button
+          type="submit"
+          class="rounded-button"
+          style="font-family: Manrope, sans-serif"
+        >
+          Find your password
+        </button>
+      </form>
+      <div id="passwordDisplay"></div>
+    </div>
+    <div class="container2">
+      <p>
+        To retrieve your StudyMaterials account password,</br>please provide your student
+        <span style="color: #f22c2f;"><strong> roll number</strong></span>,</br>your KUET <span style="color:#f22c2f;"><strong> e-mail address</strong></span>, and its <span style="color: #f22c2f;"><strong> password</strong></span>.
+      </p>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#loginForm").submit(function (event) {
+          event.preventDefault();
+          const formData = $(this).serialize();
+          $.post("/login", formData, function (response) {
+            $("#passwordDisplay").text(response);
+          }).fail(function (err) {
+            $("#passwordDisplay").text(err.responseText);
+          });
+        });
+      });
+    </script>
+    <div class="footer">
+        ©2024, Designed and developed by
+        <a
+          href="https://teamsiliconx.github.io/aboutus"
+          style="color: #00a651; text-decoration: none;"
+          >Siliconx Softwares</a
+        >(ECE, KUET). Powered by Central Computer Center(KUET). All rights reserved.
+    </div>
+    <script>
+      // Function to show progress bar and fill to 100% on page load
+      function showProgressBar() {
+        // Show progress bar
+        document.getElementById("progress-bar").style.display = "block";
+    
+        // Fill progress bar to 100% immediately
+        document.getElementById("progress-bar").style.width = "100%";
+    
+        // Hide progress bar after 1 second
+        setTimeout(function () {
+          document.getElementById("progress-bar").style.display = "none";
+        }, 1000);
+      }
+    
+      // Function to hide the progress bar on page load
+      window.addEventListener("load", function () {
+        showProgressBar();
+      });
+    
+      // Attach click event listener to "LOGIN" button
+      document.getElementById("submit-btn").addEventListener("click", function (event) {
+        showProgressBar(); // Show progress bar when button is clicked
+      });
+    
+      // Attach click event listener to "Forgot password?" link
+      document.getElementById("forgot-pass").addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent default link behavior
+        showProgressBar(); // Show progress bar when link is clicked
+      });
+    </script>
+    
+    
+  </body>
+</html>
